@@ -93,6 +93,21 @@ print_perf(y_test, y_pred, "Régression linéaire")
 print_perf(y_test, y_pred_ridge, "Ridge")
 print_perf(y_test, y_pred_lasso, "Lasso")
 
+# Explication du RMSE et du MAPE
+print("\nQu'est-ce que le RMSE ?")
+print("Le RMSE (Root Mean Squared Error) mesure l'erreur moyenne entre les valeurs réelles et les prédictions.")
+print("Il est exprimé dans la même unité que la variable cible ('ventes' ici).")
+print("Un RMSE de 1.66 est relativement bon si les ventes varient entre 1.6 et 27.0, car cela indique une erreur faible par rapport à l'échelle des données.")
+
+print("\nQu'est-ce que le MAPE ?")
+print("Le MAPE (Mean Absolute Percentage Error) mesure l'erreur moyenne en pourcentage entre les valeurs réelles et les prédictions.")
+print("Un MAPE de 0.12 (12%) signifie que les prédictions sont en moyenne à 12% d'écart des valeurs réelles.")
+print("C'est une bonne performance dans le contexte de prédiction des ventes.")
+
+# Commentaire sur les performances
+# RMSE de 1.66 : Bon, car il est faible par rapport à l'échelle des ventes (1.6 à 27.0).
+# MAPE de 0.12 : Bon, car une erreur moyenne de 12% est acceptable dans ce type de modèle.
+
 # Visualisation individuelle pour chaque modèle
 plt.scatter(y_test, y_pred, color='blue', alpha=0.7, label="Prédictions")
 plt.plot([y_test.min(), y_test.max()], [y_test.min(), y_test.max()], 'k--', label="Prédiction parfaite")
@@ -156,9 +171,13 @@ plt.show()
 
 # Analyse utile : importance des variables
 print("\nAnalyse :")
-print("Les coefficients montrent l'importance de chaque budget sur les ventes.")
-print("Un coefficient proche de zéro (Lasso) indique une variable peu utile.")
-print("La corrélation et les histogrammes montrent que 'tv' a le plus d'impact sur les ventes.")
-print("Dans ce jeu de données, les modèles Linéaire, Ridge et Lasso donnent des résultats identiques.")
-print("Cela montre que la régularisation n'apporte rien ici car les variables inutiles sont déjà peu influentes.")
-print("La régression linéaire simple est donc suffisante pour expliquer les ventes.")
+print("Les coefficients des modèles montrent clairement l'importance relative de chaque budget publicitaire sur les ventes.")
+print("- Le budget TV a le plus grand impact sur les ventes, avec un coefficient significatif dans tous les modèles.")
+print("- Le budget Radio a un impact modéré, mais reste pertinent pour expliquer les variations des ventes.")
+print("- Le budget Journaux a un impact négligeable, comme le montre son coefficient proche de zéro, particulièrement dans le modèle Lasso.")
+print("La corrélation entre les variables confirme ces observations :")
+print("- 'tv' présente la plus forte corrélation avec les ventes (0.779), indiquant une relation linéaire claire.")
+print("- 'radio' montre une corrélation modérée (0.577), tandis que 'journaux' a une corrélation faible (0.220).")
+print("Les performances des modèles (Régression Linéaire, Ridge, et Lasso) sont identiques, avec un RMSE de 1.66 et un MAPE de 0.12.")
+print("Cela indique que la régularisation (Ridge et Lasso) n'apporte pas d'amélioration significative, car les variables inutiles sont déjà peu influentes.")
+print("En conclusion, la régression linéaire simple est suffisante pour expliquer les ventes dans ce jeu de données.")
