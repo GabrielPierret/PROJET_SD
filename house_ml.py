@@ -42,7 +42,7 @@ for ax, col in zip(axes, cols):
     
     # titre et labels
     ax.set_title(col.capitalize())
-    ax.set_xlabel(f"{col} (k€)" if col != 'ventes' else "Ventes (unités)")
+    ax.set_xlabel(f"{col} (M€)" if col != 'ventes' else "Ventes (unités)")
     ax.set_ylabel("Nombre d'observations")
     
     # annotation des barres
@@ -54,7 +54,7 @@ for ax, col in zip(axes, cols):
                 f"{int(count)}",
                 ha='center', va='bottom', fontsize=8)
 
-plt.suptitle("Histogrammes des variables", y=1.02, fontsize=16)
+plt.suptitle("Histogrammes des variables", y=0.98, fontsize=16)
 plt.tight_layout()
 plt.show()
 
