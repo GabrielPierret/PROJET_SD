@@ -6,6 +6,7 @@ from sklearn.linear_model import LinearRegression, Ridge, Lasso
 from sklearn.model_selection import train_test_split
 from sklearn.preprocessing import MinMaxScaler
 from sklearn.metrics import root_mean_squared_error, mean_absolute_percentage_error
+from scipy.stats import zscore
 
 # 1. Nettoyage des données
 df = pd.read_csv("advertising.csv")
@@ -17,7 +18,7 @@ print(df.isnull().sum())
 df = df.dropna()
 
 # Détection et suppression des outliers (z-score > 3)
-from scipy.stats import zscore
+
 z_scores = np.abs(zscore(df[['tv', 'radio', 'journaux', 'ventes']]))
 df = df[(z_scores < 3).all(axis=1)]
 print(f"\nDonnées après suppression des outliers : {df.shape[0]} lignes")
@@ -77,7 +78,7 @@ g.fig.suptitle("Relations entre les budgets publicitaires et les ventes", fontsi
 plt.show()
 
 
-# On ajuste le modèle pour prédir les ventes a partir des 3 budgets publicitaires
+# On ajuste le modèle pour prédir les ventes à partir des 3 budgets publicitaires
 # 3. Régressions
 X = df[['tv', 'radio', 'journaux']]
 y = df['ventes']
@@ -156,8 +157,6 @@ print("C'est une bonne performance dans le contexte de prédiction des ventes.")
 # RMSE de 1.66 : Bon, car il est faible par rapport à l'échelle des ventes (1.6 à 27.0).
 # MAPE de 0.12 : Bon, car une erreur moyenne de 12% est acceptable dans ce type de modèle.
 
-
-
 # Visualisation comparative des trois modèles
 plt.figure(figsize=(8, 5))
 plt.scatter(y_test, y_pred, label="Linéaire", alpha=0.7)
@@ -170,3 +169,26 @@ plt.legend()
 plt.title("Comparaison des modèles : Prédictions vs Réalité")
 plt.show()
 
+# 5. Interprétation des coefficients
+print("\nCoefficients du modèle linéaire :")
+for name, coef in zip(X.columns, reg.coef_):
+    print(f"{name} : {coef:.4f}")
+
+print("\nCoefficients du modèle Ridge :")
+for name, coef in zip(X.columns, ridge.coef_):
+    print(f"{name} : {coef:.4f}")
+
+print("\nCoefficients du modèle Lasso :")
+for name, coef in zip(X.columns, lasso.coef_):
+    print(f"{name} : {coef:.4f}")
+
+# Visualisation des coefficients
+coefs = pd.DataFrame({
+    'Linéaire': reg.coef_,
+    'Ridge': ridge.coef_,
+    'Lasso': lasso.coef_
+}, index=X.columns)
+coefs.plot(kind='bar')
+plt.title("Comparaison des coefficients des modèles")
+plt.ylabel("Coefficient")
+plt.show()
