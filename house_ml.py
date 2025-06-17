@@ -31,7 +31,6 @@ print(df.describe())
 # - Le Budget varie fortment exemple , tv( de 0.7 à 293.6)
 
 # Histogrammes
-# Histogrammes annotés
 cols = ['tv', 'radio', 'journaux', 'ventes']
 fig, axes = plt.subplots(2, 2, figsize=(12, 8))
 axes = axes.flatten()
@@ -50,7 +49,7 @@ for ax, col in zip(axes, cols):
         # positionner le label au sommet de la barre
         x = patch.get_x() + patch.get_width()/2
         y = patch.get_height()
-        ax.text(x, y + 0.5,  # un petit décalage vertical
+        ax.text(x, y + 0.5,  
                 f"{int(count)}",
                 ha='center', va='bottom', fontsize=8)
 
