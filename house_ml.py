@@ -46,7 +46,7 @@ for ax, col in zip(axes, cols):
     
     # annotation des barres
     for count, patch in zip(counts, patches):
-        # positionner le label au sommet de la barre
+        # label au sommet de la barre
         x = patch.get_x() + patch.get_width()/2
         y = patch.get_height()
         ax.text(x, y + 0.5,  
