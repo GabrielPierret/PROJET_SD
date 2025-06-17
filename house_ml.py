@@ -31,10 +31,30 @@ print(df.describe())
 # - Le Budget varie fortment exemple , tv( de 0.7 à 293.6)
 
 # Histogrammes
-df.hist(bins=20, figsize=(10, 6))
-plt.suptitle("Histogrammes des variables", fontsize=16)
-plt.xlabel("Valeurs des variables")  
-plt.ylabel("Fréquence") 
+cols = ['tv', 'radio', 'journaux', 'ventes']
+fig, axes = plt.subplots(2, 2, figsize=(12, 8))
+axes = axes.flatten()
+
+for ax, col in zip(axes, cols):
+    # tracer l'histogramme
+    counts, bins, patches = ax.hist(df[col], bins=20, edgecolor='black')
+    
+    # titre et labels
+    ax.set_title(col.capitalize())
+    ax.set_xlabel(f"{col} (k€)" if col != 'ventes' else "Ventes (unités)")
+    ax.set_ylabel("Nombre d'observations")
+    
+    # annotation des barres
+    for count, patch in zip(counts, patches):
+        # label au sommet de la barre
+        x = patch.get_x() + patch.get_width()/2
+        y = patch.get_height()
+        ax.text(x, y + 0.5,  
+                f"{int(count)}",
+                ha='center', va='bottom', fontsize=8)
+
+plt.suptitle("Histogrammes des variables", y=1.02, fontsize=16)
+plt.tight_layout()
 plt.show()
 
 
