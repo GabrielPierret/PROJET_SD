@@ -32,8 +32,11 @@ print(df.describe())
 
 # Histogrammes
 df.hist(bins=20, figsize=(10, 6))
-plt.suptitle("Histogrammes des variables")
+plt.suptitle("Histogrammes des variables", fontsize=16)
+plt.xlabel("Valeurs des variables")  
+plt.ylabel("Fréquence") 
 plt.show()
+
 
 # Corrélations
 print("\nCorrélation entre les variables :")
@@ -47,18 +50,11 @@ plt.show()
 # - Cela suggère que les dépenses publicitaires à la télévision ont le plus grand impact sur les ventes.
 
 
-
 # Pairplot avec titre bien visible
-g = sns.pairplot(df, x_vars=['tv', 'radio', 'journaux'], y_vars='ventes', kind='reg')
+g = sns.pairplot(df, x_vars=['tv', 'radio', 'journaux'], y_vars='ventes', kind='reg', height=4, aspect=1.2)
 plt.subplots_adjust(top=0.9)
 g.fig.suptitle("Relations entre les budgets publicitaires et les ventes", fontsize=16)
 plt.show()
-
-# Interprétation du pairplot :
-# - La relation entre 'tv' et 'ventes' est clairement linéaire, indiquant que plus le budget TV est élevé, plus les ventes augmentent.
-# - La relation entre 'radio' et 'ventes' semble moins claire, mais il semble que plus le budget radio est élevé, plus les ventes augmentent.
-# - La relation entre 'journaux' et 'ventes' est la moins marquée, indiquant que les dépenses publicitaires dans les journaux ont le moins d'impact sur les ventes.
-
 
 
 # On ajuste le modèle pour prédir les ventes a partir des 3 budgets publicitaires
@@ -66,6 +62,9 @@ plt.show()
 X = df[['tv', 'radio', 'journaux']]
 y = df['ventes']
 X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, random_state=42)
+# On divise les données en 80 % pour l'entraînement et 20% pour le test
+
+# Preparation des modèles:
 
 # Modèle Linéaire
 reg = LinearRegression()
@@ -81,6 +80,35 @@ y_pred_ridge = ridge.predict(X_test)
 lasso = Lasso(alpha=0.1)
 lasso.fit(X_train, y_train)
 y_pred_lasso = lasso.predict(X_test)
+
+
+
+# Visualisation pour chaque modèle
+plt.scatter(y_test, y_pred, color='blue', alpha=0.7, label="Prédictions")
+plt.plot([y_test.min(), y_test.max()], [y_test.min(), y_test.max()], 'k--', label="Prédiction parfaite")
+plt.xlabel("Ventes réelles")
+plt.ylabel("Ventes prédites")
+plt.legend()
+plt.title("Prédictions vs Réalité - Régression Linéaire")
+plt.show()
+
+plt.figure(figsize=(7, 5))
+plt.scatter(y_test, y_pred_ridge, color='green', alpha=0.7)
+plt.plot([y_test.min(), y_test.max()], [y_test.min(), y_test.max()], 'k--')
+plt.xlabel("Ventes réelles")
+plt.ylabel("Ventes prédites")
+plt.title("Prédictions vs Réalité - Ridge")
+plt.show()
+
+plt.figure(figsize=(7, 5))
+plt.scatter(y_test, y_pred_lasso, color='red', alpha=0.7)
+plt.plot([y_test.min(), y_test.max()], [y_test.min(), y_test.max()], 'k--')
+plt.xlabel("Ventes réelles")
+plt.ylabel("Ventes prédites")
+plt.title("Prédictions vs Réalité - Lasso")
+plt.show()
+
+
 
 # 4. Comparaison des performances
 def print_perf(y_true, y_pred, name):
@@ -108,30 +136,7 @@ print("C'est une bonne performance dans le contexte de prédiction des ventes.")
 # RMSE de 1.66 : Bon, car il est faible par rapport à l'échelle des ventes (1.6 à 27.0).
 # MAPE de 0.12 : Bon, car une erreur moyenne de 12% est acceptable dans ce type de modèle.
 
-# Visualisation individuelle pour chaque modèle
-plt.scatter(y_test, y_pred, color='blue', alpha=0.7, label="Prédictions")
-plt.plot([y_test.min(), y_test.max()], [y_test.min(), y_test.max()], 'k--', label="Prédiction parfaite")
-plt.xlabel("Ventes réelles")
-plt.ylabel("Ventes prédites")
-plt.legend()
-plt.title("Prédictions vs Réalité - Régression Linéaire")
-plt.show()
 
-plt.figure(figsize=(7, 5))
-plt.scatter(y_test, y_pred_ridge, color='green', alpha=0.7)
-plt.plot([y_test.min(), y_test.max()], [y_test.min(), y_test.max()], 'k--')
-plt.xlabel("Ventes réelles")
-plt.ylabel("Ventes prédites")
-plt.title("Prédictions vs Réalité - Ridge")
-plt.show()
-
-plt.figure(figsize=(7, 5))
-plt.scatter(y_test, y_pred_lasso, color='red', alpha=0.7)
-plt.plot([y_test.min(), y_test.max()], [y_test.min(), y_test.max()], 'k--')
-plt.xlabel("Ventes réelles")
-plt.ylabel("Ventes prédites")
-plt.title("Prédictions vs Réalité - Lasso")
-plt.show()
 
 # Visualisation comparative des trois modèles
 plt.figure(figsize=(8, 5))
@@ -145,39 +150,3 @@ plt.legend()
 plt.title("Comparaison des modèles : Prédictions vs Réalité")
 plt.show()
 
-# 5. Interprétation des coefficients
-print("\nCoefficients du modèle linéaire :")
-for name, coef in zip(X.columns, reg.coef_):
-    print(f"{name} : {coef:.4f}")
-
-print("\nCoefficients du modèle Ridge :")
-for name, coef in zip(X.columns, ridge.coef_):
-    print(f"{name} : {coef:.4f}")
-
-print("\nCoefficients du modèle Lasso :")
-for name, coef in zip(X.columns, lasso.coef_):
-    print(f"{name} : {coef:.4f}")
-
-# Visualisation des coefficients
-coefs = pd.DataFrame({
-    'Linéaire': reg.coef_,
-    'Ridge': ridge.coef_,
-    'Lasso': lasso.coef_
-}, index=X.columns)
-coefs.plot(kind='bar')
-plt.title("Comparaison des coefficients des modèles")
-plt.ylabel("Coefficient")
-plt.show()
-
-# Analyse utile : importance des variables
-print("\nAnalyse :")
-print("Les coefficients des modèles montrent clairement l'importance relative de chaque budget publicitaire sur les ventes.")
-print("- Le budget TV a le plus grand impact sur les ventes, avec un coefficient significatif dans tous les modèles.")
-print("- Le budget Radio a un impact modéré, mais reste pertinent pour expliquer les variations des ventes.")
-print("- Le budget Journaux a un impact négligeable, comme le montre son coefficient proche de zéro, particulièrement dans le modèle Lasso.")
-print("La corrélation entre les variables confirme ces observations :")
-print("- 'tv' présente la plus forte corrélation avec les ventes (0.779), indiquant une relation linéaire claire.")
-print("- 'radio' montre une corrélation modérée (0.577), tandis que 'journaux' a une corrélation faible (0.220).")
-print("Les performances des modèles (Régression Linéaire, Ridge, et Lasso) sont identiques, avec un RMSE de 1.66 et un MAPE de 0.12.")
-print("Cela indique que la régularisation (Ridge et Lasso) n'apporte pas d'amélioration significative, car les variables inutiles sont déjà peu influentes.")
-print("En conclusion, la régression linéaire simple est suffisante pour expliquer les ventes dans ce jeu de données.")
