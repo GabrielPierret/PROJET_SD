@@ -135,12 +135,18 @@ plt.show()
 
 
 
+# Fonction qui permet de calculer deux métriques 
 # 4. Comparaison des performances
+# y_true = valeurs réélles 
+# y_perd = valeur du modèle
 def print_perf(y_true, y_pred, name):
+    # Calcul du RMSE & MAPE grâce à la bibliothèque sklearn : is a Python module integrating classical machine
     rmse = root_mean_squared_error(y_true, y_pred)
     mape = mean_absolute_percentage_error(y_true, y_pred)
     print(f"{name} - RMSE : {rmse:.2f} | MAPE : {mape:.2f}")
-
+    
+    
+#Compare les prédictions des trois modèles sur le jeu de test :
 print("\nComparaison des performances :")
 print_perf(y_test, y_pred, "Régression linéaire")
 print_perf(y_test, y_pred_ridge, "Ridge")
@@ -163,16 +169,23 @@ print("C'est une bonne performance dans le contexte de prédiction des ventes.")
 
 # Visualisation comparative des trois modèles
 plt.figure(figsize=(8, 5))
+# plt.scatter()	Compare graphiquement les vraies valeurs et les prédictions
 plt.scatter(y_test, y_pred, label="Linéaire", alpha=0.7)
 plt.scatter(y_test, y_pred_ridge, label="Ridge", alpha=0.7)
 plt.scatter(y_test, y_pred_lasso, label="Lasso", alpha=0.7)
 plt.plot([y_test.min(), y_test.max()], [y_test.min(), y_test.max()], 'k--', label="Prédiction parfaite")
-plt.xlabel("Ventes réelles")
-plt.ylabel("Ventes prédites")
+plt.xlabel("Ventes réelles en M€")
+plt.ylabel("Ventes prédites en ²M€")
 plt.legend()
 plt.title("Comparaison des modèles : Prédictions vs Réalité")
 plt.show()
 
+
+# Crée un nuage de points des prédictions vs les valeurs réelles pour chaque modèle.
+
+# La ligne en pointillé représente une prédiction parfaite (y_pred = y_true).
+
+# Plus les points sont proches de cette ligne, plus les prédictions sont précises.
 # 5. Interprétation des coefficients
 print("\nCoefficients du modèle linéaire :")
 for name, coef in zip(X.columns, reg.coef_):
