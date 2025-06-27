@@ -8,7 +8,7 @@ from sklearn.preprocessing import MinMaxScaler
 from sklearn.metrics import root_mean_squared_error, mean_absolute_percentage_error
 from scipy.stats import zscore
 
-# 1. Nettoyage des données
+#Nettoyage des données
 df = pd.read_csv("advertising.csv")
 print("Aperçu des données :")
 print(df.head())
@@ -17,19 +17,16 @@ print("\nValeurs manquantes :")
 print(df.isnull().sum())
 df = df.dropna()
 
-# Détection et suppression des outliers (z-score > 3)
+# Détection et suppression des outliers 
 
 z_scores = np.abs(zscore(df[['tv', 'radio', 'journaux', 'ventes']]))
 df = df[(z_scores < 3).all(axis=1)]
 print(f"\nDonnées après suppression des outliers : {df.shape[0]} lignes")
 
-# 2. Analyse exploratoire
+#  Analyse exploratoire
 print("\nStatistiques descriptives :")
 print(df.describe())
 
-#Interprétation des statistiques :
-# - Les ventes varient de 1.6 à 27.2, avec une moyenne de 14.0.
-# - Le Budget varie fortment exemple , tv( de 0.7 à 293.6)
 
 # Histogrammes
 cols = ['tv', 'radio', 'journaux', 'ventes']
@@ -66,9 +63,7 @@ sns.heatmap(df.corr(), annot=True, cmap="coolwarm")
 plt.title("Matrice de corrélation")
 plt.show()
 
-# Interprétation de la corrélation :
-# - 'tv' a la plus forte corrélation avec 'ventes' (0.78), suivie de 'radio' (0.35) et 'journaux' (0.22).
-# - Cela suggère que les dépenses publicitaires à la télévision ont le plus grand impact sur les ventes.
+
 
 
 # Pairplot avec titre bien visible
@@ -83,7 +78,7 @@ plt.show()
 
 
 # On ajuste le modèle pour prédir les ventes à partir des 3 budgets publicitaires
-# 3. Régressions
+# Régressions
 X = df[['tv', 'radio', 'journaux']]
 y = df['ventes']
 X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, random_state=42)
@@ -136,11 +131,10 @@ plt.show()
 
 
 # Fonction qui permet de calculer deux métriques 
-# 4. Comparaison des performances
-# y_true = valeurs réélles 
-# y_perd = valeur du modèle
+# Comparaison des performances
+
 def print_perf(y_true, y_pred, name):
-    # Calcul du RMSE & MAPE grâce à la bibliothèque sklearn : is a Python module integrating classical machine
+    
     rmse = root_mean_squared_error(y_true, y_pred)
     mape = mean_absolute_percentage_error(y_true, y_pred)
     print(f"{name} - RMSE : {rmse:.2f} | MAPE : {mape:.2f}")
@@ -163,13 +157,11 @@ print("Le MAPE (Mean Absolute Percentage Error) mesure l'erreur moyenne en pourc
 print("Un MAPE de 0.12 (12%) signifie que les prédictions sont en moyenne à 12% d'écart des valeurs réelles.")
 print("C'est une bonne performance dans le contexte de prédiction des ventes.")
 
-# Commentaire sur les performances
-# RMSE de 1.66 : Bon, car il est faible par rapport à l'échelle des ventes (1.6 à 27.0).
-# MAPE de 0.12 : Bon, car une erreur moyenne de 12% est acceptable dans ce type de modèle.
+
 
 # Visualisation comparative des trois modèles
 plt.figure(figsize=(8, 5))
-# plt.scatter()	Compare graphiquement les vraies valeurs et les prédictions
+
 plt.scatter(y_test, y_pred, label="Linéaire", alpha=0.7)
 plt.scatter(y_test, y_pred_ridge, label="Ridge", alpha=0.7)
 plt.scatter(y_test, y_pred_lasso, label="Lasso", alpha=0.7)
@@ -186,7 +178,7 @@ plt.show()
 # La ligne en pointillé représente une prédiction parfaite (y_pred = y_true).
 
 # Plus les points sont proches de cette ligne, plus les prédictions sont précises.
-# 5. Interprétation des coefficients
+#  Interprétation des coefficients
 print("\nCoefficients du modèle linéaire :")
 for name, coef in zip(X.columns, reg.coef_):
     print(f"{name} : {coef:.4f}")
